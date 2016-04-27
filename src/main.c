@@ -88,6 +88,16 @@ grb_color colors[LED_COUNT];
 
 int main()
 {
+	
+	
+  Timer1_Init();
+  for (int i = 0; i < 150; i++)
+	{
+		OCR1A ++ ;
+		_delay_ms(20);
+
+	}
+
   unsigned int count = 0;
   grb_color colorsSet[] = {(grb_color){  0,0, 0 },(grb_color){  127,255, 0 },(grb_color){  255,255, 0 },(grb_color){  255,127, 0 }, (grb_color){  255,0, 0 },(grb_color){  255,0, 127 },(grb_color){  255,0, 255 },(grb_color){  127,0, 255 },(grb_color){ 0, 0, 255 },(grb_color){ 0, 127, 255 },(grb_color){ 0, 255, 255 },(grb_color){ 0, 255, 127 },(grb_color){  0,255, 0 },(grb_color){  127,255, 0 },(grb_color){  255,255, 0 },(grb_color){  255,127, 0 }, (grb_color){  255,0, 0 },(grb_color){  255,0, 127 },(grb_color){  255,0, 255 }};
 
