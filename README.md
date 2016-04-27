@@ -1,2 +1,6 @@
 # HDD-Clock
-Blablabla
+
+
+
+http://www.arduino.cc/en/Tutorial/SecretsOfArduinoPWM
+
