@@ -91,7 +91,7 @@ int main()
 	
 	
   Timer1_Init();
-  for (int i = 0; i < 150; i++)
+  for (int i = 0; i < 142; i++)
 	{
 		OCR1A ++ ;
 		_delay_ms(20);
