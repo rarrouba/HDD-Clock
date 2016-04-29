@@ -7,11 +7,14 @@
 #include <stdlib.h>
 
 void Timer1_Init(){
+
+	cli();//stop interrupts
+
 	DDRB |= (1 << DDB5);
 	// PB5
 
 	ICR1 = 1249;
-	// set TOP to 16bit
+	// set TOP to 16bit (50 Hz)
 
 	OCR1A = 7;
 	// set PWM for 12% duty cycle @ 16bit
@@ -24,9 +27,11 @@ void Timer1_Init(){
 
 	TCCR1A |= (1 << WGM11);
 	TCCR1B |= (1 << WGM12) | (1 << WGM13);
-	// set Fast PWM mode using ICR1 as TOP
+	// set Fast PWM mode using ICR1 as TOP 
 
 	TCCR1B |= (1 << CS12);
-	// START the timer with no prescaler
+	// START the timer with prescaler 8
+
+	sei();//allow interrupts
 
 }
