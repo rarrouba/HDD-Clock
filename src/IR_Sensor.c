@@ -4,7 +4,7 @@
 #include "HeaderFiles/dwenguinoBoard.h"
 #include "HeaderFiles/dwenguinoLCD.h"
 
-int tijdMotor = 0;  // moet in main opgeroepen kunnen worden
+unsigned int tijdMotor = 0;  // moet in main opgeroepen kunnen worden
 
 
 void Timer3_Init(){
