@@ -1,4 +1,3 @@
-
 #include <avr/io.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -6,72 +5,32 @@
 #include <avr/interrupt.h>
 #include <stdlib.h>
 
+void Timer3_Init(){
 
-uint8_t count = 0;
-// 0°  => 0.388ms
-//90°  => 1.264ms
-//180°  => 2.140ms
-void Timer1_init()
-{
 	cli();//stop interrupts
-	
-		  TCCR1A = 0;// set entire TCCR1A register to 0
-		  TCCR1B = 0;// same for TCCR1B
-		  TCNT1  = 0;//initialize counter value to 0
-		  // set compare match register for (20 ms-1.264ms)*2 increments
-		  OCR1A = 37471;
-		  // turn on CTC mode
-		  TCCR1B |= (1 << WGM12);
-		  // Set CS10 and CS12 bits for 8 prescaler
-		  TCCR1B |= (1 << CS01) ;
-		  // enable timer compare interrupt
-		  TIMSK1 |= (1 << OCIE1A);
-		  
-		sei();//allow interrupts
-}
 
+	DDRC |= (1 << DDC6);
+	// PB5
 
-int main (void)
-{
-	DDRB |= (1<<1);
+	ICR3 = 1251;
+	// set TOP to 50 Hz
 
+	OCR3A = 7;
+	// set PWM for 12% duty cycle @ 16bit
 
-	Timer1_init();
+	//OCR1B = 0xBFFF;
+	// set PWM for 75% duty cycle @ 16bit
 
+	TCCR3A |= (1 << COM3A1) | (1 << COM3B1);
+	// set non-inverting mode
 
+	TCCR3A |= (1 << WGM31);
+	TCCR3B |= (1 << WGM32) | (1 << WGM33);
+	// set Fast PWM mode using ICR1 as TOP
 
+	TCCR3B |= (1 << CS32);
+	// START the timer with 256 prescaler
 
-
-   while(1)
-    {
-
-	}
-
-
+	sei();//allow interrupts
 
 }
-
-ISR(TIMER1_COMPA_vect)
-{
-		count++;
-	    if (count % 2 == 0){
-
-	    	PORTB &= (0<<DDB1);
-		//(20 ms-1.264ms)*2 increments
-	    	OCR1A = 37471;
-
-		}
-
-		else{
-		PORTB |= (1<<DDB1);
-		//(1.264ms)*2 increments
-		OCR1A = 2527;
-
-
-		}
-
-
-
-}
-
-
