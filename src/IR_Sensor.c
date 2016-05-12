@@ -7,14 +7,13 @@
 int tijdMotor = 0;  // moet in main opgeroepen kunnen worden
 
 
-void Timer1_Init(){
+void Timer3_Init(){
 
 
-	DDRB |= (0 << DDB0);		// PIN for PCINT0
-	PORTB |= (1 << DDB0);		// Pull-Up
-	EICRA |= (1<< ISC01);
-	PCMSK0 |= (1<< PCINT0);
-	PCICR |= (1<< PCIE0);
+	DDRD |= (0 << DDD3);		// PIN for PCINT0
+	PORTD |= (1 << DDD3);		// Pull-Up
+	EICRA |= (1<< ISC31);
+	EIMSK |= (1<< INT3);
 
 	cli();//stop interrupts
 
@@ -24,24 +23,24 @@ void Timer1_Init(){
 
 		//set timer1 interrupt at 1Hz
 
-		  TCCR1A = 0;// set entire TCCR1A register to 0
-		  TCCR1B = 0;// same for TCCR1B
+		  TCCR3A = 0;// set entire TCCR1A register to 0
+		  TCCR3B = 0;// same for TCCR1B
 
-		  TCNT1  = 0;//initialize counter value to 0
-		  OCR1A = 0;//
-		  OCR1B = 0;
+		  TCNT3  = 0;//initialize counter value to 0
+		  OCR3A = 0;//
+		  OCR3B = 0;
 
 		  // turn on Normal mode
-		  TCCR1B |= (0 << WGM10) | (0 << WGM11) | (0 << WGM12)| (0 << WGM11);
+		  TCCR3B |= (0 << WGM30) | (0 << WGM31) | (0 << WGM32)| (0 << WGM31);
 
 		  // Set CS10 and CS12 bits for 1024 prescaler => 15,625 kHz = freq Timer1
-		  TCCR1B |= (1 << CS12) | (1 << CS10);
+		  TCCR3B |= (1 << CS32) | (1 << CS30);
 
 		  // Falling edge trigger with input capture
-		  TCCR1B |= (0 << ICES1);
+		  TCCR3B |= (0 << ICES3);
 
 		  // input capture interrupt enable
-		  TIMSK1 |=  (1 << ICIE1)| (1 << TOIE1);
+		  TIMSK3 |=  (1 << ICIE3)| (1 << TOIE3);
 
 
 
@@ -50,13 +49,13 @@ void Timer1_Init(){
 
 }
 
-ISR(PCINT0_vect)  // IR_Sensor triggered
+ISR(INT3_vect)  // IR_Sensor triggered
 {
-   tijdMotor = ICR1;      // save duration of last revolution
-   TCNT1 = 0;       // restart timer for next revolution
+   tijdMotor = ICR3;      // save duration of last revolution
+   TCNT3 = 0;       // restart timer for next revolution
 }
 
-ISR(TIMER1_OVF_vect)    // counter overflow/timeout
+ISR(TIMER3_OVF_vect)    // counter overflow/timeout
    { tijdMotor = 0;
 
    }
@@ -80,3 +79,4 @@ void LCDSnelheid(){
 
 	}
 }
+
