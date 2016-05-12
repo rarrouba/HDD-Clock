@@ -48,10 +48,10 @@ void Opstart_ESC(){
 
 	OCR1A = 156;
 	while(!KnopESC){
-
+		_delay_ms(0);
 	}
 	OCR1A = 56;
-	_delay_ms(3000);
+	_delay_ms(4000);
 	OCR1A = 7;
 
 
