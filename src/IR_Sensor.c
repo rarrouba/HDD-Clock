@@ -53,7 +53,7 @@ void Timer3_Init(){
 
 ISR(INT3_vect)  // IR_Sensor triggered
 {
-   tijdMotor = ICR3;      // save duration of last revolution
+   tijdMotor = TCNT3;      // save duration of last revolution
    TCNT3 = 0;       // restart timer for next revolution
 }
 
