@@ -14,6 +14,8 @@ void Timer3_Init(){
 	PORTD |= (1 << DDD3);		// Pull-Up
 	EICRA |= (1<< ISC31);
 	EIMSK |= (1<< INT3);
+	SREG = 0b10000000;
+
 
 	cli();//stop interrupts
 
