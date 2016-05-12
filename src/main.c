@@ -14,11 +14,22 @@ grb_color colors[LED_COUNT];
 
 int main()
 {
+	//IR sensor
 	initBoard();
 	initLCD();
 	backlightOn();
 	clearLCD();
 	Timer1_Init();
+	
+	//motor
+	INT_init();
+	Timer1_Motor_Init();
+	Opstart_ESC();
+	for (int i = 0; i < 140; i++)
+    {
+		OCR1A ++ ;
+		_delay_ms(20);
+	}
 	for (int i = 0; i < 140; i++)
     {
 		OCR3A ++ ;
