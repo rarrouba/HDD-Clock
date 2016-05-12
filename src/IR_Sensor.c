@@ -10,11 +10,17 @@ int tijdMotor = 0;  // moet in main opgeroepen kunnen worden
 void Timer1_Init(){
 
 
-	DDRD |= (0 << DDD4);		// PIN for ICP1
-	PORTD |= (1 << DDD4);		// Pull-Up
-
+	DDRB |= (0 << DDB0);		// PIN for PCINT0
+	PORTB |= (1 << DDB0);		// Pull-Up
+	EICRA |= (1<< ISC01);
+	PCMSK0 |= (1<< PCINT0);
+	PCICR |= (1<< PCIE0);
 
 	cli();//stop interrupts
+
+
+
+
 
 		//set timer1 interrupt at 1Hz
 
@@ -44,7 +50,7 @@ void Timer1_Init(){
 
 }
 
-ISR(TIMER1_CAPT_vect)  // IR_Sensor triggered
+ISR(PCINT0_vect)  // IR_Sensor triggered
 {
    tijdMotor = ICR1;      // save duration of last revolution
    TCNT1 = 0;       // restart timer for next revolution
@@ -60,6 +66,8 @@ ISR(TIMER1_OVF_vect)    // counter overflow/timeout
 void LCDSnelheid(){
 
 	clearLCD();
+	  setCursorLCD(0, 0);
+
 	_delay_ms(50);
 
 	if(tijdMotor>0){
