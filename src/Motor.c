@@ -5,32 +5,60 @@
 #include <avr/interrupt.h>
 #include <stdlib.h>
 
-void Timer3_Init(){
+
+
+char KnopESC = 0;
+
+void Timer1_Motor_Init(){
+
+	EICRB |= (1<< ISC51) | (1<< ISC50);
+	EIMSK |= (1<< INT5);
+	SREG = 0b10000000;
 
 	cli();//stop interrupts
 
-	DDRC |= (1 << DDC6);
+	DDRB |= (1 << DDB5);
 	// PB5
 
-	ICR3 = 1251;
+	ICR1 = 1251;
 	// set TOP to 50 Hz
 
-	OCR3A = 7;
+	OCR1A = 7;
 	// set PWM for 12% duty cycle @ 16bit
 
 	//OCR1B = 0xBFFF;
 	// set PWM for 75% duty cycle @ 16bit
 
-	TCCR3A |= (1 << COM3A1) | (1 << COM3B1);
+	TCCR1A |= (1 << COM1A1) | (1 << COM1B1);
 	// set non-inverting mode
 
-	TCCR3A |= (1 << WGM31);
-	TCCR3B |= (1 << WGM32) | (1 << WGM33);
+	TCCR1A |= (1 << WGM11);
+	TCCR1B |= (1 << WGM12) | (1 << WGM13);
 	// set Fast PWM mode using ICR1 as TOP
 
-	TCCR3B |= (1 << CS32);
+	TCCR1B |= (1 << CS12);
 	// START the timer with 256 prescaler
 
 	sei();//allow interrupts
+
+}
+
+
+void Opstart_ESC(){
+
+	OCR1A = 156;
+	while(!KnopESC){
+
+	}
+	OCR1A = 56;
+	_delay_ms(3000);
+	OCR1A = 7;
+
+
+}
+
+ISR(INT5_vect)  // knop Zuiden
+{
+	KnopESC = 1;
 
 }
