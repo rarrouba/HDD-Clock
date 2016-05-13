@@ -62,3 +62,50 @@ ISR(INT5_vect)  // knop Zuiden
 	KnopESC = 1;
 
 }
+
+
+
+
+void Timer0_Init(){
+
+	cli();//stop interrupts
+
+
+
+
+
+			//set timer1 interrupt at 1Hz
+
+			  TCCR0A = 0;// set entire TCCR1A register to 0
+			  TCCR0B = 0;// same for TCCR1B
+
+			  TCNT0  = 0;//initialize counter value to 0
+			  OCR0A = 5;
+			  OCR0B = 95;
+
+
+			  // turn on CTC mode
+			  TCCR0B |=  (1 << WGM02)
+			  // Set CS00 and CS02 bits for 1024 prescaler
+			  TCCR0B |= (1 << CS02) | (1 << CS00);
+
+			  // input capture interrupt enable
+			  TIMSK0 |= (1 << OCIE0A) | (1<< OCIE0B);
+
+
+
+
+		sei();//allow interrupts
+
+
+}
+
+ISR(TIMER0_COMPA_vect){
+
+	PrintSegmentOK();
+}
+
+ISR(TIMER0_COMPB_vect){
+
+	PrintOK();
+}
