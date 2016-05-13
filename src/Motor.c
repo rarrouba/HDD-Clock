@@ -85,7 +85,7 @@ void Timer0_Init(){
 
 
 			  // turn on CTC mode
-			  TCCR0B |=  (1 << WGM02)
+			  TCCR0B |=  (1 << WGM02);
 			  // Set CS00 and CS02 bits for 1024 prescaler
 			  TCCR0B |= (1 << CS02) | (1 << CS00);
 
