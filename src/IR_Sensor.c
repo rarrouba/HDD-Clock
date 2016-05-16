@@ -1,8 +1,16 @@
+/*
+ * IR_Sensor.c
+ *
+ *  Created on: 2-mei.-2016
+ *      Author: Redouane
+ */
+
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
 #include "HeaderFiles/dwenguinoBoard.h"
 #include "HeaderFiles/dwenguinoLCD.h"
+#include "IR_Sensor.h"
 
 int tijdMotor = 0;  // moet in main opgeroepen kunnen worden
 
