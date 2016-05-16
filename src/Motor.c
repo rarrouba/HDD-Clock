@@ -9,55 +9,56 @@
 
 char KnopESC = 0;
 
-void Timer1_Motor_Init(){
+void Timer1_Motor_Init(){	// methode die timer 1 initialiseert om het PWM signaal voor de ESC te genereren
 
-	EICRB |= (1<< ISC51) | (1<< ISC50);
-	EIMSK |= (1<< INT5);
-	SREG = 0b10000000;
+	
 
 	cli();//stop interrupts
 
-	DDRB |= (1 << DDB5);
-	// PB5
+	DDRB |= (1 << DDB5); // Pin B5 als output, die wordt gebruikt voor OCR1A
+	
+	ICR1 = 1251;// TOP op 50 Hz zetten
 
-	ICR1 = 1251;
-	// set TOP to 50 Hz
+	OCR1A = 12; // PWM met ca 1 % duty cycle
 
-	OCR1A = 7;
-	// set PWM for 12% duty cycle @ 16bit
-
-	//OCR1B = 0xBFFF;
-	// set PWM for 75% duty cycle @ 16bit
-
-	TCCR1A |= (1 << COM1A1) | (1 << COM1B1);
-	// set non-inverting mode
+	TCCR1A |= (1 << COM1A1) ; // overschrijven van poort functionaliteit met OCnA output
 
 	TCCR1A |= (1 << WGM11);
 	TCCR1B |= (1 << WGM12) | (1 << WGM13);
-	// set Fast PWM mode using ICR1 as TOP
+	// zet Fast PWM mode aan met ICR1 als TOP
 
 	TCCR1B |= (1 << CS12);
-	// START the timer with 256 prescaler
+	// start de timer met 256 prescaler
 
-	sei();//allow interrupts
+	sei();//toestaan interrupts
 
 }
 
 
-void Opstart_ESC(){
+void Opstart_ESC(){			// methode die de opstart sequentie voorziet van de ESC, die in de datasheet wordt uitgelegd
 
-	OCR1A = 156;
-	while(!KnopESC){
+/* Voor onze ESC is een specifieke opstart procedure nodig vooraleer deze kan worden gebruikt om de motor aan te sturen. 
+   Er wordt een max signaal (duty cycle van 10%) gestuurd. De motor wordt dan aangesloten op de voeding. Als men een dubbele pieptoon
+   hoort, moet er op de knop (S) gedrukt worden. Op dat moment zal de duty cycle veranden naar het minimum (4,5%). Daarna zal me weer een
+   dubbele toon horen gevolgd door een melodietje. De ESC kan nu worden gebruikt om de motor aan testuren */
+
+
+	EICRB |= (1<< ISC51) | (1<< ISC50);	// stijgende flank detectie
+	EIMSK |= (1<< INT5);			// interrupt 5 voor de knop S
+	SREG = 0b10000000;			// globale interrupt enable
+	
+	OCR1A = 125;				// maximaal signaal voor ESC
+	while(!KnopESC){			// zolang de knop niet ingedrukt zal signaal niet veranderen
 		_delay_ms(0);
 	}
-	OCR1A = 56;
-	_delay_ms(4000);
+	OCR1A = 56;				// minimaal signaal voor ESC
+	_delay_ms(4000);			// wachten op het melodietje
 	OCR1A = 7;
 
 
 }
 
-ISR(INT5_vect)  // knop Zuiden
+ISR(INT5_vect)  // knop Zuiden			
 {
 	KnopESC = 1;
 
@@ -74,38 +75,32 @@ void Timer0_Init(){
 
 
 
-			//set timer1 interrupt at 1Hz
 
-			  TCCR0A = 0;// set entire TCCR1A register to 0
-			  TCCR0B = 0;// same for TCCR1B
+			  TCCR0A = 0;// hele register op 0 zetten
+		          TCCR0B = 0;// ook TCCR0B
 
-			  TCNT0  = 0;//initialize counter value to 0
-			  OCR0A = 5;
-			  OCR0B = 95;
-
-
-			  // turn on CTC mode
+			  TCNT0  = 0;// counter waarde op 0 inittialiseren
+			  OCR0A = 5; // 1/16 tijd van één toer
+			  
+			  // CTC mode aanzetten
 			  TCCR0B |=  (1 << WGM02);
-			  // Set CS00 and CS02 bits for 1024 prescaler
+			  // //  CS00 en CS02 bits voor 1024 prescaler
 			  TCCR0B |= (1 << CS02) | (1 << CS00);
 
-			  // input capture interrupt enable
-			  TIMSK0 |= (1 << OCIE0A) | (1<< OCIE0B);
+			  // compare match interrupt enable
+			  TIMSK0 |= (1 << OCIE0A) ;
 
 
 
 
-		sei();//allow interrupts
+	sei();//toestaan interrupts
 
 
 }
 
-ISR(TIMER0_COMPA_vect){
+ISR(TIMER0_COMPA_vect){			// compare match A interrupt
 
 	PrintSegmentOK();
 }
 
-ISR(TIMER0_COMPB_vect){
 
-	PrintOK();
-}
