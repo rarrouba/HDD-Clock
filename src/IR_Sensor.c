@@ -7,54 +7,46 @@
 int tijdMotor = 0;  // moet in main opgeroepen kunnen worden
 
 
-void Timer3_Init(){
+void Timer3_Init(){			// methode die timer 3 initialiseert om de snelheid van de motor te meten via de IR-sensor
 
 
-	DDRD |= (0 << DDD3);		// PIN for PCINT0
-	PORTD |= (1 << DDD3);		// Pull-Up
-	EICRA |= (1<< ISC31);
-	EIMSK |= (1<< INT3);
-	SREG = 0b10000000;
+	DDRD |= (0 << DDD3);		// Pin als input declaren 
+	PORTD |= (1 << DDD3);		// Pull-Up 
+	EICRA |= (1<< ISC31);		// trigger bij dalende flank
+	EIMSK |= (1<< INT3);		// activeren van interrupt 3 
+	SREG = 0b10000000;		// activeren van de interrupts
 
 
 	cli();//stop interrupts
 
 
+		  TCCR3A = 0;// hele register op 0 zetten
+		  TCCR3B = 0;// ook TCCR3B
 
-
-
-		//set timer1 interrupt at 1Hz
-
-		  TCCR3A = 0;// set entire TCCR1A register to 0
-		  TCCR3B = 0;// same for TCCR1B
-
-		  TCNT3  = 0;//initialize counter value to 0
-		  OCR3A = 0;//
+		  TCNT3  = 0;// counter waarde op 0 inittialiseren
+		  OCR3A = 0;
 		  OCR3B = 0;
 
-		  // turn on Normal mode
+		  //  Normal mode
 		  TCCR3B |= (0 << WGM30) | (0 << WGM31) | (0 << WGM32)| (0 << WGM31);
 
-		  // Set CS10 and CS12 bits for 1024 prescaler => 15,625 kHz = freq Timer1
+		  //  CS10 en CS12 bits voor 1024 prescaler => 15,625 kHz = freq Timer3
 		  TCCR3B |= (1 << CS32) | (1 << CS30);
 
-		  // Falling edge trigger with input capture
-		  TCCR3B |= (0 << ICES3);
-
-		  // input capture interrupt enable
-		  TIMSK3 |=  (1 << ICIE3)| (1 << TOIE3);
+		  // overflow interrupt enable
+		  TIMSK3 |=  (1 << TOIE3);
 
 
 
 
-	sei();//allow interrupts
+	sei();// interrupts enable
 
 }
 
 ISR(INT3_vect)  // IR_Sensor triggered
 {
-   tijdMotor = TCNT3;      // save duration of last revolution
-   TCNT3 = 0;       // restart timer for next revolution
+   tijdMotor = TCNT3;      // opslaan tijd van laatste toer
+   TCNT3 = 0;       // restart timer voor volgende toer
 }
 
 ISR(TIMER3_OVF_vect)    // counter overflow/timeout
@@ -64,7 +56,7 @@ ISR(TIMER3_OVF_vect)    // counter overflow/timeout
 
 
 
-void LCDSnelheid(){
+void LCDSnelheid(){		// methode die wordt gebruikt bij het debuggen om de snelheid van de schijf te weten
 
 	clearLCD();
 	  setCursorLCD(0, 0);
