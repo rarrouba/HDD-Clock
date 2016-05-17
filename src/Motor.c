@@ -39,7 +39,7 @@ void Opstart_ESC(){			// methode die de opstart sequentie voorziet van de ESC, d
 
 /* Voor onze ESC is een specifieke opstart procedure nodig vooraleer deze kan worden gebruikt om de motor aan te sturen. 
    Er wordt een max signaal (duty cycle van 10%) gestuurd. De motor wordt dan aangesloten op de voeding. Als men een dubbele pieptoon
-   hoort, moet er op de knop (S) gedrukt worden. Op dat moment zal de duty cycle veranden naar het minimum (4,5%). Daarna zal me weer een
+   hoort, moet er op de knop (S) gedrukt worden. Op dat moment zal de duty cycle veranden naar het minimum (4,5%). Daarna zal men weer een
    dubbele toon horen gevolgd door een melodietje. De ESC kan nu worden gebruikt om de motor aan testuren */
 
 
