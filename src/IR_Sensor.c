@@ -32,14 +32,14 @@ void Timer3_Init(){			// methode die timer 3 initialiseert om de snelheid van de
 		  TCCR3B = 0;// ook TCCR3B
 
 		  TCNT3  = 0;// counter waarde op 0 inittialiseren
-		  OCR3A = 15625;
+		  OCR3A = 62500;
 		  OCR3B = 0;
 
 		  //  Normal mode
 		  TCCR3B |= (0 << WGM30) | (0 << WGM31) | (0 << WGM32)| (0 << WGM31);
 
-		  //  CS10 en CS12 bits voor 1024 prescaler => 15,625 kHz = freq Timer3
-		  TCCR3B |= (1 << CS32) | (1 << CS30);
+		  //   CS32 bits voor 256 prescaler => 62,5 kHz = freq Timer3
+		  TCCR3B |= (1 << CS32);
 
 		  // overflow interrupt enable
 		  TIMSK3 |=  (1 << TOIE3) | (1 << OCIE1A);
@@ -77,7 +77,7 @@ void LCDSnelheid(){		// methode die wordt gebruikt bij het debuggen om de snelhe
 
 	if(tijdMotor>0){
 
-		printIntToLCD(15625/tijdMotor,1,4);
+		printIntToLCD(62500/tijdMotor,1,4);
 
 	}
 	else{
