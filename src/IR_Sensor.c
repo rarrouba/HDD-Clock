@@ -13,7 +13,6 @@
 #include "IR_Sensor.h"
 
 int tijdMotor = 0;  // moet in main opgeroepen kunnen worden
-long secondes = 0;  // secondes
 
 void Timer3_Init(){			// methode die timer 3 initialiseert om de snelheid van de motor te meten via de IR-sensor
 
@@ -32,7 +31,7 @@ void Timer3_Init(){			// methode die timer 3 initialiseert om de snelheid van de
 		  TCCR3B = 0;// ook TCCR3B
 
 		  TCNT3  = 0;// counter waarde op 0 inittialiseren
-		  OCR3A = 62500;
+		  OCR3A = 0;
 		  OCR3B = 0;
 
 		  //  Normal mode
@@ -42,7 +41,7 @@ void Timer3_Init(){			// methode die timer 3 initialiseert om de snelheid van de
 		  TCCR3B |= (1 << CS32);
 
 		  // overflow interrupt enable
-		  TIMSK3 |=  (1 << TOIE3) | (1 << OCIE1A);
+		  TIMSK3 |=  (1 << TOIE3) ;
 
 
 
@@ -62,9 +61,7 @@ ISR(TIMER3_OVF_vect)    // counter overflow/timeout
 
    }
    
-ISR(TIMER3_COMPA_vect){
-	secondes++;
-}
+
 
 
 
