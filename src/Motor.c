@@ -8,6 +8,13 @@
 
 
 char KnopESC = 0;
+long secondesT1 = 0;  // secondes 1/50
+
+int SecondesT1(unsigned int nummer){
+	secondesT1= secondesT1-nummer;
+	return secondesT1;
+}
+
 
 void Timer1_Motor_Init(){	// methode die timer 1 initialiseert om het PWM signaal voor de ESC te genereren
 
@@ -17,9 +24,9 @@ void Timer1_Motor_Init(){	// methode die timer 1 initialiseert om het PWM signaa
 
 	DDRB |= (1 << DDB5); // Pin B5 als output, die wordt gebruikt voor OCR1A
 	
-	ICR1 = 1251;// TOP op 50 Hz zetten
+	ICR1 = 4999;// TOP op 50 Hz zetten
 
-	OCR1A = 12; // PWM met ca 1 % duty cycle
+	OCR1A = 250; // PWM met ca 1 % duty cycle
 
 	TCCR1A |= (1 << COM1A1) ; // overschrijven van poort functionaliteit met OCnA output
 
@@ -27,10 +34,17 @@ void Timer1_Motor_Init(){	// methode die timer 1 initialiseert om het PWM signaa
 	TCCR1B |= (1 << WGM12) | (1 << WGM13);
 	// zet Fast PWM mode aan met ICR1 als TOP
 
-	TCCR1B |= (1 << CS12);
-	// start de timer met 256 prescaler
+	TCCR1B |= (1 << CS10) | (1 << CS11);
+	// start de timer met 64 prescaler
+	TIMSK1 |=  (1 << TOIE1) ;
 
 	sei();//toestaan interrupts
+
+}
+
+ISR(TIMER1_OVF_vect){
+	secondesT1++;
+
 
 }
 
