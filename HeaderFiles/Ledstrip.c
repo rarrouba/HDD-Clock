@@ -2,7 +2,7 @@
  * Ledstrip.c
  *
  *  Created on: 15-apr.-2016
- *      Author: Mattijs
+ *      Author: Redouane
  */
 
 
